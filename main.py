@@ -50,6 +50,8 @@
         #     #                     (indexY, indexX-1)
         #     #                     (indexY, indexX+1)
 
+            for X, Y in range(if indexY-1 !< 0: 0 else 0,
+
 
 
         Game logic:
@@ -80,4 +82,42 @@
                                         else -> continue
 
 
+
+
 '''
+
+
+import numpy as np
+import random
+
+
+def make_grid(size):
+    s = {"H":9, "W": 9, "Bombs": 10}
+    m = {"H":16, "W": 16, "Bombs": 40}
+    l = {"H":16, "W": 30, "Bombs": 99}
+    if size == "s": grid_meta = s
+    if size == "m": grid_meta = m
+    if size == "l": grid_meta = l
+
+    arr = np.zeros((grid_meta["H"], grid_meta["W"]), dtype=int)
+
+
+
+    for i in range(grid_meta["Bombs"]):
+        while True:
+            a = random.randint(0, grid_meta["H"]-1)
+            b = random.randint(0, grid_meta["W"]-1)
+
+            if arr[a][b] == 0:
+                arr[a][b] = 1
+                break
+            else:
+                continue
+    return arr
+
+print("Welcom in Sapper Game!")
+size = input("Choose size ('s', 'm' or 'l'): ")
+
+print(make_grid("l"))
+
+
