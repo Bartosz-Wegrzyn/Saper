@@ -109,105 +109,123 @@ def make_grid(grid_size):
                 break
             else: continue
 
-    bombs_around = check_how_many_bombs_is_around(bombs_map, grid_meta)
+    full_board = bomb_map_to_full_board(bombs_map, grid_meta)
 
-    return bombs_map, field_status, bombs_around
+    return full_board, field_status
 
-def check_how_many_bombs_is_around(bombs_map, grid_meta):
-    bombs_around = np.zeros((grid_meta["H"], grid_meta["W"]), dtype=int)
+def bomb_map_to_full_board(bombs_map, grid_meta):
+    full_board = np.zeros((grid_meta["H"], grid_meta["W"]), dtype=int)
 
-    # print(bombs_around.shape)
-    # print(bombs_map.shape)
-    # print(grid_meta["H"])
-    # print(grid_meta["W"])
-    # for row in range(grid_meta["H"]):
-    #     print("row: ", row)
-    #     for colum in range(grid_meta["W"]):
-    #         print("col: ", colum)
-    #
-    #
+
     for row in range(grid_meta["H"]):
         for colum in range(grid_meta["W"]):
-
-
-
-
-            # field
-            if grid_meta["H"]-1 > row > 0 and grid_meta["W"]-1 > colum > 0: # center fields
-                bombs_around[row][colum] = bombs_map[row-1][colum-1]+\
-                                        bombs_map[row-1][colum]+\
-                                        bombs_map[row-1][colum+1]+\
-                                        bombs_map[row][colum-1]+\
-                                        bombs_map[row][colum+1]+\
-                                        bombs_map[row+1][colum-1]+\
-                                        bombs_map[row+1][colum]+\
-                                        bombs_map[row+1][colum+1]
-            #Corners
-            elif row == 0 and colum == 0: # left top corner
-                bombs_around[row][colum] = bombs_map[row][colum+1]+\
-                                        bombs_map[row+1][colum+1]+\
-                                        bombs_map[row+1][colum]
-
-            elif row == grid_meta["H"]-1 and colum == 0:  # bottom left corner
-                bombs_around[row][colum] = bombs_map[row-1][colum] + \
-                                        bombs_map[row-1][colum+1] + \
-                                        bombs_map[row][colum+1]
-
-            elif row == grid_meta["H"]-1 and colum == grid_meta["W"]-1:  # bottom right corner
-                bombs_around[row][colum] = bombs_map[row][colum-1] + \
-                                        bombs_map[row-1][colum-1] + \
-                                        bombs_map[row-1][colum]
-
-            elif row == 0 and colum == grid_meta["W"]-1: # right top corner
-                bombs_around[row][colum] = bombs_map[row][colum-1]+\
-                                        bombs_map[row+1][colum-1]+\
-                                        bombs_map[row+1][colum]
-
-            # Rows and Columns on sides
-            elif row == 0 and  grid_meta["W"]-1 > colum > 0 : # top row
-
-                bombs_around[row][colum] = bombs_map[row][colum+1]+\
-                                        bombs_map[row+1][colum+1]+\
-                                        bombs_map[row+1][colum]+\
-                                        bombs_map[row][colum-1] + \
-                                        bombs_map[row+1][colum-1]
-
-            elif 0 < row < grid_meta["H"]-1 and colum == 0: # left column
-                bombs_around[row][colum] = bombs_map[row-1][colum] + \
-                                        bombs_map[row-1][colum+1] + \
-                                        bombs_map[row][colum+1]+\
-                                        bombs_map[row+1][colum+1] + \
-                                        bombs_map[row+1][colum]
-
-            elif 0 < row < grid_meta["H"]-1 and colum == grid_meta["W"]-1:  # right column
-                bombs_around[row][colum] = bombs_map[row][colum-1]+\
-                                        bombs_map[row+1][colum-1]+\
-                                        bombs_map[row+1][colum]+\
-                                        bombs_map[row-1][colum-1] + \
-                                        bombs_map[row-1][colum]
-
-
-            elif row == grid_meta["H"]-1 and grid_meta["W"]-1 > colum > 0:  # bottom row
-                bombs_around[row][colum] = bombs_map[row-1][colum] + \
-                                        bombs_map[row-1][colum+1] + \
-                                        bombs_map[row][colum+1]+\
-                                        bombs_map[row][colum-1] + \
-                                        bombs_map[row-1][colum-1]
+            if bombs_map[row][colum]==1:
+                full_board[row][colum]=-1
             else:
-                print("Error!!!!1")
-                print("Operacja: ", row, colum)
-                print("row: ", row)
-                print("col: ", colum)
 
-    return bombs_around
+                # field
+                if grid_meta["H"]-1 > row > 0 and grid_meta["W"]-1 > colum > 0: # center fields
+                    full_board[row][colum] = bombs_map[row-1][colum-1]+\
+                                            bombs_map[row-1][colum]+\
+                                            bombs_map[row-1][colum+1]+\
+                                            bombs_map[row][colum-1]+\
+                                            bombs_map[row][colum+1]+\
+                                            bombs_map[row+1][colum-1]+\
+                                            bombs_map[row+1][colum]+\
+                                            bombs_map[row+1][colum+1]
+                #Corners
+                elif row == 0 and colum == 0: # left top corner
+                    full_board[row][colum] = bombs_map[row][colum+1]+\
+                                            bombs_map[row+1][colum+1]+\
+                                            bombs_map[row+1][colum]
+
+                elif row == grid_meta["H"]-1 and colum == 0:  # bottom left corner
+                    full_board[row][colum] = bombs_map[row-1][colum] + \
+                                            bombs_map[row-1][colum+1] + \
+                                            bombs_map[row][colum+1]
+
+                elif row == grid_meta["H"]-1 and colum == grid_meta["W"]-1:  # bottom right corner
+                    full_board[row][colum] = bombs_map[row][colum-1] + \
+                                            bombs_map[row-1][colum-1] + \
+                                            bombs_map[row-1][colum]
+
+                elif row == 0 and colum == grid_meta["W"]-1: # right top corner
+                    full_board[row][colum] = bombs_map[row][colum-1]+\
+                                            bombs_map[row+1][colum-1]+\
+                                            bombs_map[row+1][colum]
+
+                # Rows and Columns on sides
+                elif row == 0 and  grid_meta["W"]-1 > colum > 0 : # top row
+
+                    full_board[row][colum] = bombs_map[row][colum+1]+\
+                                            bombs_map[row+1][colum+1]+\
+                                            bombs_map[row+1][colum]+\
+                                            bombs_map[row][colum-1] + \
+                                            bombs_map[row+1][colum-1]
+
+                elif 0 < row < grid_meta["H"]-1 and colum == 0: # left column
+                    full_board[row][colum] = bombs_map[row-1][colum] + \
+                                            bombs_map[row-1][colum+1] + \
+                                            bombs_map[row][colum+1]+\
+                                            bombs_map[row+1][colum+1] + \
+                                            bombs_map[row+1][colum]
+
+                elif 0 < row < grid_meta["H"]-1 and colum == grid_meta["W"]-1:  # right column
+                    full_board[row][colum] = bombs_map[row][colum-1]+\
+                                            bombs_map[row+1][colum-1]+\
+                                            bombs_map[row+1][colum]+\
+                                            bombs_map[row-1][colum-1] + \
+                                            bombs_map[row-1][colum]
+
+
+                elif row == grid_meta["H"]-1 and grid_meta["W"]-1 > colum > 0:  # bottom row
+                    full_board[row][colum] = bombs_map[row-1][colum] + \
+                                            bombs_map[row-1][colum+1] + \
+                                            bombs_map[row][colum+1]+\
+                                            bombs_map[row][colum-1] + \
+                                            bombs_map[row-1][colum-1]
+                else:
+                    print("Error!!!!1")
+                    print("Operacja: ", row, colum)
+                    print("row: ", row)
+                    print("col: ", colum)
+
+    return full_board
+
+
+# def make_guess(full_board, hight, width):
+#     guess =
+#     print(guess)
 
 
 
-# print("Welcom in Sapper Game!")
-# size = input("Choose size ('s', 'm' or 'l'): ")
+def game_loop():
+    full_board, field_status = make_grid("s")
+    print(full_board)
+    while True:
+        r=int(input("Row: "))
+        c=int(input("Col: "))
+        m=input("Move: ") #lc, (?, F, C)
 
-bombs_map, field_status, bombs_around = make_grid("s")
+        if m == "lc":
+            if field_status[r][c] == 0:
+                if full_board[r][c] == -1:
+                    print("game over!")
+                    exit()
+                else:
+                    field_status[r][c] = full_board[r][c]
 
-print(bombs_map)
-print()
-print(bombs_around)
+
+        if m == "?":
+            if field_status[r][c] == 0 or "F" or "C":
+                field_status[r][c] = -2
+
+
+        if m == "F":
+            pass
+        if m == "C":
+            pass
+        print(field_status)
+
+
+game_loop()
